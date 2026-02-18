@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Three Sentences, One Portrait</title>
+  <style>
+    :root{
+      --bg0:#06070b;
+      --bg1:#0b0f1a;
+      --ink:#eef2ff;
+      --muted:rgba(238,242,255,.72);
+      --soft:rgba(238,242,255,.12);
+      --glass:rgba(255,255,255,.06);
+      --stroke:rgba(255,255,255,.14);
+      --shadow: 0 25px 70px rgba(0,0,0,.55);
+      --radius:24px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      color:var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(1200px 800px at 15% 10%, rgba(255, 65, 193,.22), transparent 60%),
+        radial-gradient(1000px 700px at 80% 25%, rgba(88, 176, 255,.22), transparent 55%),
+        radial-gradient(1100px 800px at 55% 95%, rgba(121, 255, 193,.14), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
+    }
+
+    /* Subtle animated grain */
+    .grain{
+      pointer-events:none;
+      position:fixed;
+      inset:-50%;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+      mix-blend-mode:overlay;
+      opacity:.18;
+      animation: drift 14s linear infinite;
+      transform:translate3d(0,0,0);
+    }
+    @keyframes drift{
+      0%{ transform:translate3d(-2%, -2%, 0) rotate(0deg); }
+      100%{ transform:translate3d(2%, 2%, 0) rotate(2deg); }
+    }
+
+    /* Floating aurora ribbons */
+    .aurora{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      filter: blur(18px) saturate(120%);
+      opacity:.75;
+    }
+    .ribbon{
+      position:absolute;
+      width:70vmax;
+      height:20vmax;
+      border-radius:999px;
+      transform: rotate(-18deg);
+      background: linear-gradient(90deg,
+        rgba(255,64,193,.00),
+        rgba(255,64,193,.28),
+        rgba(88,176,255,.24),
+        rgba(121,255,193,.18),
+        rgba(255,64,193,.00)
+      );
+      animation: float 12s ease-in-out infinite;
+    }
+    .ribbon:nth-child(1){ top: -8vmax; left: -14vmax; animation-duration: 14s; }
+    .ribbon:nth-child(2){ top: 22vmax; left: 38vmax; animation-duration: 16s; transform: rotate(8deg); opacity:.6; }
+    .ribbon:nth-child(3){ top: 58vmax; left: -18vmax; animation-duration: 18s; transform: rotate(-6deg); opacity:.55; }
+
+    @keyframes float{
+      0%,100%{ translate: 0 0; }
+      50%{ translate: 3vmax -2vmax; }
+    }
+
+    .wrap{
+      position:relative;
+      width:min(1120px, calc(100% - 40px));
+      margin:0 auto;
+      padding: 72px 0 56px;
+    }
+
+    header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:24px;
+      margin-bottom:44px;
+    }
+
+    .badge{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding:10px 14px;
+      border:1px solid var(--stroke);
+      border-radius:999px;
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      box-shadow: 0 18px 45px rgba(0,0,0,.35);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      font-size:13px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:rgba(238,242,255,.86);
+    }
+
+    .dot{
+      width:10px; height:10px; border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, #fff, rgba(255,255,255,.0) 60%),
+                  linear-gradient(180deg, rgba(255,64,193,.9), rgba(88,176,255,.85));
+      box-shadow: 0 0 0 6px rgba(255,255,255,.06), 0 0 30px rgba(255,64,193,.25);
+    }
+
+    h1{
+      margin:18px 0 10px;
+      font-size: clamp(38px, 5vw, 64px);
+      line-height:1.03;
+      letter-spacing:-0.03em;
+    }
+
+    .sub{
+      max-width: 62ch;
+      color:var(--muted);
+      font-size: clamp(15px, 1.5vw, 18px);
+      line-height:1.65;
+      margin:0;
+    }
+
+    .heroCard{
+      margin-top:26px;
+      border-radius: var(--radius);
+      border:1px solid var(--stroke);
+      background:
+        radial-gradient(1200px 300px at 25% 0%, rgba(255,64,193,.20), transparent 60%),
+        radial-gradient(900px 260px at 85% 15%, rgba(88,176,255,.18), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      padding: 22px 22px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+    }
+
+    .heroMeta{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .heroMeta b{
+      font-weight:650;
+      letter-spacing:.02em;
+    }
+    .heroMeta span{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+    }
+
+    .btns{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    button{
+      appearance:none;
+      border:none;
+      border-radius: 999px;
+      padding: 11px 14px;
+      cursor:pointer;
+      color: var(--ink);
+      background: rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow: 0 12px 28px rgba(0,0,0,.35);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      font-weight:600;
+      letter-spacing:.02em;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+    }
+    button:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.20); }
+    button:active{ transform: translateY(0px) scale(.99); }
+    .primary{
+      background: linear-gradient(180deg, rgba(255,64,193,.34), rgba(88,176,255,.20));
+      border-color: rgba(255,255,255,.22);
+    }
+
+    main{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:18px;
+      margin-top:22px;
+    }
+    @media (max-width: 900px){
+      header{ flex-direction:column; }
+      main{ grid-template-columns:1fr; }
+      .btns{ justify-content:flex-start; }
+    }
+
+    .panel{
+      border-radius: var(--radius);
+      border:1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      overflow:hidden;
+      position:relative;
+      min-height: 280px;
+    }
+
+    .panel::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      background:
+        radial-gradient(700px 220px at 20% 0%, rgba(121,255,193,.12), transparent 55%),
+        radial-gradient(600px 220px at 80% 25%, rgba(255,64,193,.12), transparent 60%);
+      pointer-events:none;
+      opacity:.9;
+    }
+
+    .panelHeader{
+      position:relative;
+      padding:18px 18px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+
+    .panelHeader h2{
+      margin:0;
+      font-size:14px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color: rgba(238,242,255,.84);
+    }
+
+    .chip{
+      font-size:12px;
+      color: rgba(238,242,255,.78);
+      padding:7px 10px;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:999px;
+      background: rgba(255,255,255,.05);
+      white-space:nowrap;
+    }
+
+    .quotes{
+      position:relative;
+      padding: 16px 18px 20px;
+      display:grid;
+      gap:14px;
+    }
+
+    .card{
+      position:relative;
+      padding:16px 16px 14px;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(10,12,20,.35);
+      box-shadow: 0 20px 45px rgba(0,0,0,.35);
+      overflow:hidden;
+      transform: translateZ(0);
+    }
+
+    .card::after{
+      content:"";
+      position:absolute;
+      inset:-60px;
+      background:
+        radial-gradient(400px 180px at var(--x, 20%) var(--y, 20%),
+          rgba(88,176,255,.22),
+          transparent 60%);
+      opacity:.55;
+      pointer-events:none;
+      transition: opacity .2s ease;
+    }
+
+    .card:hover::after{ opacity:.85; }
+
+    .kicker{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+
+    .kicker strong{
+      font-size:13px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color: rgba(238,242,255,.78);
+      font-weight:700;
+    }
+
+    .kicker em{
+      font-style:normal;
+      font-size:12px;
+      color: rgba(238,242,255,.62);
+      padding:6px 9px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+    }
+
+    blockquote{
+      margin:0;
+      font-size: clamp(18px, 2.1vw, 26px);
+      line-height:1.35;
+      letter-spacing: -0.01em;
+    }
+
+    .hint{
+      margin-top:10px;
+      color: rgba(238,242,255,.62);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    /* Right panel */
+    .portrait{
+      position:relative;
+      padding: 18px;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .orb{
+      position:relative;
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.14);
+      background:
+        radial-gradient(700px 300px at 25% 25%, rgba(255,64,193,.18), transparent 60%),
+        radial-gradient(680px 320px at 75% 30%, rgba(88,176,255,.18), transparent 60%),
+        radial-gradient(780px 340px at 55% 85%, rgba(121,255,193,.12), transparent 65%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      box-shadow: var(--shadow);
+      padding: 18px;
+      overflow:hidden;
+      min-height: 220px;
+    }
+
+    .orbTitle{
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .orbTitle h3{
+      margin:0;
+      font-size:14px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color: rgba(238,242,255,.84);
+    }
+    .orbTitle span{
+      color: rgba(238,242,255,.62);
+      font-size:12px;
+    }
+
+    .sig{
+      font-size: clamp(26px, 3.4vw, 40px);
+      line-height:1.05;
+      letter-spacing: -0.03em;
+      margin: 0 0 10px;
+    }
+    .sig strong{
+      background: linear-gradient(90deg, rgba(255,64,193,.95), rgba(88,176,255,.92), rgba(121,255,193,.88));
+      -webkit-background-clip: text;
+      background-clip:text;
+      color:transparent;
+    }
+
+    .micro{
+      margin:0;
+      color: rgba(238,242,255,.72);
+      font-size:14px;
+      line-height:1.6;
+      max-width:60ch;
+    }
+
+    .meter{
+      margin-top:14px;
+      display:grid;
+      gap:10px;
+    }
+
+    .bar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      font-size:12px;
+      color: rgba(238,242,255,.72);
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .track{
+      height:10px;
+      flex:1;
+      border-radius:999px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    .fill{
+      height:100%;
+      width: var(--w, 50%);
+      border-radius:999px;
+      background: linear-gradient(90deg, rgba(255,64,193,.6), rgba(88,176,255,.55), rgba(121,255,193,.45));
+      filter:saturate(125%);
+    }
+
+    footer{
+      margin-top: 22px;
+      padding: 18px 2px 0;
+      color: rgba(238,242,255,.52);
+      font-size:12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .fineprint{
+      opacity:.9;
+    }
+    .smalllink{
+      color: rgba(238,242,255,.62);
+      text-decoration:none;
+      border-bottom:1px dashed rgba(238,242,255,.25);
+    }
+    .smalllink:hover{ color: rgba(238,242,255,.82); border-bottom-color: rgba(238,242,255,.45); }
+
+    /* Fancy reveal */
+    .reveal{
+      opacity:0;
+      transform: translateY(10px);
+      animation: reveal .7s ease forwards;
+      animation-delay: var(--d, 0s);
+    }
+    @keyframes reveal{
+      to{ opacity:1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="aurora" aria-hidden="true">
+    <div class="ribbon"></div>
+    <div class="ribbon"></div>
+    <div class="ribbon"></div>
+  </div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <header class="reveal" style="--d:.05s">
+      <div> 
+        <div class="badge"><span class="dot"></span> Portrait in Four Texts</div>
+        <h1>
+          A person, reflected
+          <br />
+          through <span style="background:linear-gradient(90deg, rgba(255,64,193,.95), rgba(88,176,255,.92)); -webkit-background-clip:text; background-clip:text; color:transparent;">three lenses</span>.
+        </h1>
+        <p class="sub">
+          Close friend. Acquaintance. Stranger.
+          Three sentences that collide into one quiet, glowing outline.
+        </p>
+      </div>
+    </header>
+
+    <main>
+      <!-- Left: the three quotes -->
+      <section class="panel reveal" style="--d:.15s" id="leftPanel">
+
+        <div class="quotes">
+          <article class="card tilt" data-tone="warm">
+            <div class="kicker">
+              <strong>Someone who knows you well</strong>
+              <em>Inner circle</em>
+            </div>
+            <blockquote>
+              “He takes his study seriously and genuinely kind to his friends, showing thoughtfulness and care to his friends as well as in his work.”
+            </blockquote>
+            <div class="hint">A steady hand. A dependable heart.</div>
+          </article>
+
+          <article class="card tilt" data-tone="poetic">
+            <div class="kicker">
+              <strong>An acquaintance</strong>
+              <em>At a distance</em>
+            </div>
+            <blockquote>
+              “Someone with literary elegance and an Eastern aesthetic temperament”
+            </blockquote>
+            <div class="hint">Grace, restraint, and a taste for beauty.</div>
+          </article>
+
+          <article class="card tilt" data-tone="simple">
+            <div class="kicker">
+              <strong>A stranger</strong>
+              <em>First glance</em>
+            </div>
+            <blockquote>
+              “I like the color of your jacket.”
+            </blockquote>
+            <div class="hint">Sometimes the smallest detail is the doorway in.</div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Right: a “portrait” panel -->
+      <aside class="panel reveal" style="--d:.22s" id="rightPanel">
+        <div class="portrait">
+          <div class="orb">
+            <div class="orbTitle">
+              <h3>Warning</h3>
+              <span id="timestamp">—</span>
+            </div>
+            <p class="sig">
+              Made with 
+              <br>
+              <strong>Generative AI</strong>.
+            </p>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="reveal" style="--d:.3s">
+      <div class="fineprint">
+        © 2026 Weixuan Kong 
+        <br>
+        <strong>Made with generative AI</strong>.
+      </div>
+      <div>
+        <a class="smalllink" href="#" id="copy">Copy the three sentences</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Timestamp (for a luxe “live” feel)
+    const stamp = document.getElementById("timestamp");
+    const fmt = new Intl.DateTimeFormat(undefined, {
+      weekday: "short", year: "numeric", month: "short", day: "2-digit",
+      hour: "2-digit", minute: "2-digit"
+    });
+    stamp.textContent = fmt.format(new Date());
+
+    // Tilt + spotlight follow for cards
+    const tilts = document.querySelectorAll(".tilt");
+    tilts.forEach(card => {
+      card.addEventListener("mousemove", (e) => {
+        const r = card.getBoundingClientRect();
+        const x = e.clientX - r.left;
+        const y = e.clientY - r.top;
+
+        const rx = ((y / r.height) - 0.5) * -6;
+        const ry = ((x / r.width) - 0.5) *  8;
+
+        card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-1px)`;
+        card.style.setProperty("--x", `${(x / r.width) * 100}%`);
+        card.style.setProperty("--y", `${(y / r.height) * 100}%`);
+      });
+
+      card.addEventListener("mouseleave", () => {
+        card.style.transform = `perspective(900px) rotateX(0deg) rotateY(0deg)`;
+      });
+    });
+
+    // Remix button: changes “mood” label + subtle reshuffle animation
+    const moods = [
+      { name:"Prism", glow:"rgba(255,64,193,.25)" },
+      { name:"Moonlit", glow:"rgba(88,176,255,.22)" },
+      { name:"Jade", glow:"rgba(121,255,193,.18)" },
+      { name:"Velvet", glow:"rgba(255,255,255,.12)" }
+    ];
+    let moodIdx = 0;
+
+    const moodChip = document.getElementById("moodChip");
+    const remixBtn = document.getElementById("remix");
+    const leftPanel = document.getElementById("leftPanel");
+    const rightPanel = document.getElementById("rightPanel");
+
+    function punch(el){
+      el.animate([
+        { transform:"translateY(0px) scale(1)", filter:"saturate(1)" },
+        { transform:"translateY(-2px) scale(1.01)", filter:"saturate(1.15)" },
+        { transform:"translateY(0px) scale(1)", filter:"saturate(1)" }
+      ], { duration: 420, easing:"cubic-bezier(.2,.8,.2,1)" });
+    }
+
+    remixBtn.addEventListener("click", () => {
+      moodIdx = (moodIdx + 1) % moods.length;
+      moodChip.textContent = `Mood: ${moods[moodIdx].name}`;
+
+      // glow pulse
+      leftPanel.style.boxShadow = `0 25px 70px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.02), 0 0 60px ${moods[moodIdx].glow}`;
+      rightPanel.style.boxShadow = `0 25px 70px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.02), 0 0 60px ${moods[moodIdx].glow}`;
+
+      punch(leftPanel); punch(rightPanel);
+
+      // quick “shuffle” effect on cards
+      tilts.forEach((c, i) => {
+        c.animate([
+          { transform: "translateY(0px)" },
+          { transform: `translateY(${(i%2? -6: 6)}px)` },
+          { transform: "translateY(0px)" }
+        ], { duration: 360, easing:"cubic-bezier(.2,.8,.2,1)" });
+      });
+    });
+
+    // Focus mode: dims everything except quotes panel
+    const focusBtn = document.getElementById("focus");
+    let focused = false;
+    focusBtn.addEventListener("click", () => {
+      focused = !focused;
+      document.body.style.backgroundColor = focused ? "#05060a" : "";
+      rightPanel.style.opacity = focused ? "0.18" : "1";
+      rightPanel.style.filter = focused ? "blur(1px)" : "none";
+      focusBtn.textContent = focused ? "Exit Focus" : "Focus Mode";
+    });
+
+    // Copy
+    const copy = document.getElementById("copy");
+    copy.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const text =
+`He takes his study seriously and genuinely kind to his friends, showing thoughtfulness and care to his friends as well as in his work.
+Someone with literary elegance and an Eastern aesthetic temperament
+I like the color of your jacket.`;
+      try{
+        await navigator.clipboard.writeText(text);
+        copy.textContent = "Copied ✦";
+        setTimeout(()=> copy.textContent = "Copy the three sentences", 1200);
+      }catch{
+        // fallback
+        prompt("Copy:", text);
+      }
+    });
+  </script>
+</body>
+</html>
