@@ -529,6 +529,7 @@
       <!-- Right: a “portrait” panel -->
       <aside class="panel reveal" style="--d:.22s" id="rightPanel">
         <div class="portrait">
+          <!-- WARNING BOX -->
           <div class="orb">
             <div class="orbTitle">
               <h3>Warning</h3>
@@ -538,10 +539,55 @@
               Made with 
               <br>
               <strong>Generative AI</strong>.
-              <br>
-              <br>
+              <br><br>
               I oppose the <strong>excessive</strong> interpretation and <strong>contrived</strong> word choice on this webpage.
             </p>
+          </div>
+          <br>
+          <br>
+          <!-- GALLERY BUTTON (OUTSIDE WARNING BOX, FULL-WIDTH) -->
+          <div style="display:flex; width:100%;">
+            <a
+              href="#gallery"
+              class="primary"
+              style="
+                width:100%;
+                display:flex;
+                align-items:center;
+                justify-content:space-between;
+                gap:12px;
+                text-decoration:none;
+                padding:14px 16px;
+                border-radius:999px;
+                border:1px solid rgba(255,255,255,.22);
+                color: var(--ink);
+                background: linear-gradient(180deg, rgba(255,64,193,.34), rgba(88,176,255,.20));
+                box-shadow: 0 12px 28px rgba(0,0,0,.35);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                font-weight: 600;
+                letter-spacing: .02em;
+              "
+              aria-label="Go to Gallery (Under Construction)"
+            >
+              <span>Go to Gallery</span>
+              <span
+                style="
+                  font-size:12px;
+                  padding:7px 10px;
+                  border-radius:999px;
+                  border:1px solid rgba(255,255,255,.16);
+                  background: rgba(255,255,255,.06);
+                  color: rgba(238,242,255,.78);
+                  letter-spacing:.08em;
+                  text-transform:uppercase;
+                  white-space:nowrap;
+                "
+              >
+                Under Construction
+              </span>
+            </a>
+          </div>
         </div>
       </aside>
     </main>
